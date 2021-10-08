@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var musicTitle: UILabel!
     @IBOutlet weak var musicSinger: UILabel!
     @IBOutlet weak var musicImg: UIImageView!
-    public static var lyrics: [String] = []
+    var lyrics: [String] = []
     
 //    private let music = MusicModel()
 //    var music = MusicFile()
@@ -41,6 +41,10 @@ class ViewController: UIViewController {
 //        print(music.musicFiles[0].title)
         getData()
 //        print(music.title)
+
+//        let url = URL(string: "https://grepp-programmers-challenges.s3.ap-northeast-2.amazonaws.com/2020-flo/song.json")
+//        let data = try Data(contentsOf: url!)
+
     }
 
     func getData() {
@@ -59,7 +63,7 @@ class ViewController: UIViewController {
                     let data = try Data(contentsOf: imgURL!)
                     self.musicImg.image = UIImage(data: data)
                     self.musicSinger.text = dummy_data.singer
-                    ViewController.lyrics = dummy_data.lyrics.split(separator: "\n").map{String($0)}
+                    self.lyrics = dummy_data.lyrics.split(separator: "\n").map{String($0)}
                     self.lyricsPicker.reloadAllComponents()
                 } catch {
                     debugPrint(error)
@@ -87,7 +91,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return ViewController.lyrics.count
+        return lyrics.count
     }
     
     // 텍스트 설정
@@ -96,7 +100,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         if let v = view as? UILabel { label = v }
         label.font = UIFont (name: "Helvetica Neue", size: 16)
         label.textColor = .white
-        label.text = ViewController.lyrics[row]
+        label.text = lyrics[row]
         label.textAlignment = .center
         return label
     }
@@ -104,6 +108,16 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     // 줄간격
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
             return 20
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        guard let lyricsVC = self.storyboard?.instantiateViewController(identifier: "lyricsView") as? lyricsViewController else{ return }
+        
+        lyricsVC.lyrics = self.lyrics
+        
+//        self.navigationController?.pushViewController(lyricsVC, animated: true)
+        lyricsVC.modalPresentationStyle = .fullScreen
+        self.present(lyricsVC, animated: true, completion: nil)
     }
 }
 

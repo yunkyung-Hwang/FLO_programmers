@@ -13,7 +13,9 @@
 import UIKit
 
 class lyricsViewController: UIViewController {
+    
     @IBOutlet weak var lyricsTable: UITableView!
+    var lyrics: [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,17 +29,20 @@ class lyricsViewController: UIViewController {
         lyricsTable.backgroundColor = .clear
         lyricsTable.separatorStyle = .none
     }
+    @IBAction func closeView(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
 }
 extension lyricsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return ViewController.lyrics.count
+        return lyrics.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = lyricsTable.dequeueReusableCell(withIdentifier: "lyricsCell", for: indexPath)
         cell.textLabel?.textColor = .white
         cell.backgroundColor = .clear
-        cell.textLabel?.text = ViewController.lyrics[indexPath.row]
+        cell.textLabel?.text = lyrics[indexPath.row]
         return cell
     }
 }
